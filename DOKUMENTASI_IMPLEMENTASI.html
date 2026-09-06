@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dokumen Implementasi SIMRS Laboratorium RSUD Lubuk Sikaping</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 8pt;
+        font-family: 'Segoe UI', sans-serif;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+      color: #1e293b;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Page Breaks */
+    .page-break {
+      page-break-before: always;
+      margin-top: 20px;
+    }
+
+    .no-break {
+      page-break-inside: avoid;
+    }
+
+    /* Header & Kop */
+    .kop-surat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid #0f172a;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .kop-logo {
+      width: 60px;
+      height: 70px;
+      border: 2px solid #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 8pt;
+      background: #f8fafc;
+      border-radius: 4px;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .kop-text {
+      flex: 1;
+      text-align: center;
+      padding: 0 15px;
+    }
+
+    .kop-text .instansi {
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: 0.5px;
+    }
+
+    .kop-text .rs-name {
+      font-size: 14pt;
+      font-weight: 900;
+      color: #0f172a;
+      text-transform: uppercase;
+      line-height: 1.2;
+      margin: 2px 0;
+    }
+
+    .kop-text .unit-name {
+      font-size: 10.5pt;
+      font-weight: 800;
+      color: #0d9488;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kop-text .alamat {
+      font-size: 7.5pt;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .kop-form-code {
+      text-align: right;
+      font-family: 'Consolas', monospace;
+    }
+
+    .kop-form-code .badge-code {
+      border: 2px solid #0f172a;
+      padding: 4px 10px;
+      font-size: 10pt;
+      font-weight: 900;
+      display: inline-block;
+      border-radius: 4px;
+      background: #f8fafc;
+    }
+
+    /* Titles & Typography */
+    h1.doc-title {
+      font-size: 15pt;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      color: #0f172a;
+      margin: 12px 0 4px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-subtitle {
+      font-size: 9.5pt;
+      text-align: center;
+      color: #475569;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    h2.section-title {
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 2px solid #0d9488;
+      padding-bottom: 4px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3.sub-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #134e4a;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    p, li {
+      text-align: justify;
+      margin-bottom: 6px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 14px;
+      font-size: 8.5pt;
+    }
+
+    table, th, td {
+      border: 1px solid #cbd5e1;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    td {
+      padding: 5px 8px;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Badges & Highlights */
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .badge-teal { background-color: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+    .badge-blue { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-amber { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-purple { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+    .badge-rose { background-color: #ffe4e6; color: #9f1239; border: 1px solid #fecdd3; }
+    .badge-emerald { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-critical { background-color: #e11d48; color: #ffffff; font-weight: 900; }
+
+    /* Callout Boxes */
+    .alert-box {
+      border-left: 4px solid #0d9488;
+      background: #f0fdfa;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin: 10px 0;
+      font-size: 9pt;
+    }
+
+    .alert-critical {
+      border-left: 4px solid #e11d48;
+      background: #fff1f2;
+      color: #881337;
+    }
+
+    /* Diagram Styles */
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 12px 0;
+      text-align: center;
+    }
+
+    /* Grid boxes */
+    .grid-2 {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .grid-2 > div {
+      flex: 1;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+      background: #ffffff;
+    }
+
+    /* Flowchart Node Box */
+    .flow-step {
+      border: 1.5px solid #0d9488;
+      background: #f0fdfa;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .flow-step-header {
+      font-weight: 800;
+      font-size: 9pt;
+      color: #0f766e;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .flow-step-desc {
+      font-size: 8pt;
+      color: #334155;
+      margin-top: 2px;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      font-size: 14pt;
+      color: #0d9488;
+      margin: -4px 0 4px 0;
+      font-weight: bold;
+    }
+
+    /* Code block */
+    pre {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-family: 'Consolas', monospace;
+      font-size: 8pt;
+      overflow-x: auto;
+      line-height: 1.4;
+      margin: 8px 0;
+    }
+
+    /* Signatures */
+    .signature-grid {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      page-break-inside: avoid;
+    }
+
+    .sig-box {
+      width: 45%;
+      text-align: center;
+    }
+
+    .sig-space {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sig-name {
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    .sig-role {
+      font-size: 8pt;
+      color: #64748b;
+    }
+
+    .stamp-qr {
+      border: 1.5px solid #0d9488;
+      background: #f0fdfa;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      font-size: 7.5pt;
+      color: #0f766e;
+      font-family: monospace;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PAGE 1 ================= -->
+  <div class="kop-surat">
+    <div class="kop-logo">
+      <span>LOGO</span>
+      <span>RSUD</span>
+    </div>
+    <div class="kop-text">
+      <div class="instansi">Pemerintah Kabupaten Pasaman</div>
+      <div class="rs-name">RUMAH SAKIT UMUM DAERAH LUBUK SIKAPING</div>
+      <div class="unit-name">Instalasi Laboratorium Patologi Klinik</div>
+      <div class="alamat">Jl. Jend. Sudirman No. 33 Telp. (0753) 20033 Lubuk Sikaping - Sumatera Barat</div>
+    </div>
+    <div class="kop-form-code">
+      <div class="badge-code">RM. 21 / LAB</div>
+      <div style="font-size: 7pt; color: #64748b; margin-top: 3px;">STANDAR AKREDITASI</div>
+    </div>
+  </div>
+
+  <h1 class="doc-title">DOKUMEN IMPLEMENTASI TEKNIS & PANDUAN OPERASIONAL</h1>
+  <div class="doc-subtitle">Sistem Informasi Manajemen Laboratorium Rumah Sakit (SIMRS-LAB / LIS)<br>Standar Alur 5 Tahap Terintegrasi &amp; Keselamatan Pasien</div>
+
+  <div class="alert-box">
+    <strong>Ringkasan Eksekutif:</strong> Dokumen ini merupakan blueprint teknis resmi, arsitektur basis data, diagram alur sistem, serta panduan operasional pengguna (*User Manual*) untuk sistem LIS yang dibangun di <code>D:\laboratorium</code> dengan frontend Vue 3, backend REST API Node.js/Express, dan basis data MongoDB Mongoose.
+  </div>
+
+  <h2 class="section-title">1. GAMBARAN UMUM SISTEM</h2>
+  <p>
+    Sistem Informasi Laboratorium Rumah Sakit (LIS) ini dikembangkan untuk mendigitalkan seluruh alur pelayanan laboratorium di RSUD Lubuk Sikaping. Penerapan alur terstandar 5 tahap bertujuan menjamin presisi diagnostik medik, mencegah insiden keselamatan pasien seperti tertukarnya spesimen (*misidentification*), mempercepat waktu tunggu hasil (*Turn Around Time - TAT*), serta memberikan jalur komunikasi darurat cepat untuk temuan Nilai Kritis (*Critical Value Reporting*).
+  </p>
+
+  <h2 class="section-title">2. FLOWCHART SISTEM &amp; ALUR PELAYANAN 5 TAHAP</h2>
+
+  <!-- Flowchart Visual Boxes -->
+  <div class="diagram-container">
+    <div style="font-weight: 800; font-size: 9pt; text-transform: uppercase; color: #0f172a; margin-bottom: 12px;">
+      Diagram Alur Pelayanan Laboratorium Terintegrasi (End-to-End Workflow)
+    </div>
+
+    <!-- Step 1 -->
+    <div class="flow-step" style="border-left: 6px solid #0d9488;">
+      <div class="flow-step-header">
+        <span>TAHAP 1: PENDAFTARAN &amp; PENERIMAAN RUJUKAN</span>
+        <span class="badge badge-teal">Resepsionis Lab</span>
+      </div>
+      <div class="flow-step-desc">
+        Pasien datang membawa formulir pengantar dokter &rarr; Verifikasi rekam medis (No RM / NIK) &rarr; Input asal rujukan (Poli, IGD, Ranap) &amp; dokter pengirim &rarr; Checklist item tes lab &rarr; Sistem generate No Registrasi dan Nomor Antrean (LAB-xxx).
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Step 2 -->
+    <div class="flow-step" style="border-left: 6px solid #d97706;">
+      <div class="flow-step-header">
+        <span>TAHAP 2: PROSES ADMINISTRASI &amp; KASIR PENJAMINAN</span>
+        <span class="badge badge-amber">Loket Kasir / BPJS</span>
+      </div>
+      <div class="flow-step-desc">
+        Pencocokan identitas &amp; rincian tarif tes &rarr; [Pasien Umum: Pelunasan Kasir via Tunai / QRIS / EDC] OR [Pasien BPJS / Asuransi: Verifikasi No. SEP / Polis] &rarr; Status berubah menjadi <strong>LUNAS / TERVERIFIKASI</strong> &rarr; Pasien diarahkan ke Bilik Sampling.
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Step 3 -->
+    <div class="flow-step" style="border-left: 6px solid #2563eb;">
+      <div class="flow-step-header">
+        <span>TAHAP 3: PENGAMBILAN SPESIMEN (FLEBOTOMI &amp; BARCODE)</span>
+        <span class="badge badge-blue">Bilik Flebotomi</span>
+      </div>
+      <div class="flow-step-desc">
+        Pemanggilan pasien sesuai antrean &rarr; Sistem merekomendasikan tabung spesimen (Ungu EDTA, Kuning Gel, Pot Urine) &rarr; Pengambilan darah/urine &rarr; <strong>Cetak &amp; tempel label barcode unik (SMP-xxx) pada tabung</strong> &rarr; Pengecekan kualitas spesimen (Baik / Hemolisis).
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Step 4 -->
+    <div class="flow-step" style="border-left: 6px solid #9333ea;">
+      <div class="flow-step-header">
+        <span>TAHAP 4: PENGOLAHAN &amp; ANALISIS SAMPEL (RUANG ANALITIK)</span>
+        <span class="badge badge-purple">Worklist Analis Medis</span>
+      </div>
+      <div class="flow-step-desc">
+        Sampel didistribusikan ke mesin otomatis (Sysmex, Cobas, dsb.) &rarr; Analis menginput nilai hasil pengujian &rarr; Sistem melakukan <strong>Auto-Flagging</strong> (NORMAL / LOW / HIGH / CRITICAL ALERT) &rarr; Rekam instrumen, lot reagen &amp; nama analis &rarr; Kirim ke meja Sp.PK.
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Step 5 -->
+    <div class="flow-step" style="border-left: 6px solid #e11d48;">
+      <div class="flow-step-header">
+        <span>TAHAP 5: VALIDASI &amp; OTORISASI DOKTER SP.PK</span>
+        <span class="badge badge-rose">Dokter Sp.PK</span>
+      </div>
+      <div class="flow-step-desc">
+        Review kesesuaian klinis berlapis &rarr; Konfirmasi pelaporan telepon jika ada Nilai Kritis &rarr; [Opsi: Kembalikan untuk Uji Ulang jika meragukan] ATAU [Opsi: Berikan Catatan Ekspertise Patologi Klinik &amp; Otorisasi Digital Signature QR] &rarr; Status <strong>SELESAI</strong>.
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Output -->
+    <div class="flow-step" style="border: 2px solid #059669; background: #ecfdf5;">
+      <div class="flow-step-header" style="color: #065f46;">
+        <span>OUTPUT: DOKUMEN HASIL PEMERIKSAAN RESMI (RM. 21 / LAB)</span>
+        <span class="badge badge-emerald">Dokumen Rekam Medis Sah</span>
+      </div>
+      <div class="flow-step-desc">
+        Lembar cetak standar rumah sakit terbit lengkap dengan identitas pasien, tabel hasil per kategori, nilai rujukan gender, catatan ekspertise Sp.PK, dan tanda tangan QR verifikasi.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 2 ================= -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">3. ARSITEKTUR SISTEM &amp; TEKNOLOGI</h2>
+  
+  <p>
+    Sistem mengimplementasikan pola arsitektur modern <strong>Three-Tier Decoupled Architecture</strong> untuk memastikan modularitas, skalabilitas, dan kemudahan pemeliharaan sistem jangka panjang.
+  </p>
+
+  <table class="no-break">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Layer / Tingkatan</th>
+        <th style="width: 25%;">Teknologi &amp; Versi</th>
+        <th>Fungsi &amp; Tanggung Jawab dalam Sistem</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Presentation Layer</strong><br>(Frontend Web SPA)</td>
+        <td>
+          &bull; Vue.js 3 (Composition API)<br>
+          &bull; Vite 5.4.11<br>
+          &bull; Tailwind CSS 3.4<br>
+          &bull; Vue Router 4
+        </td>
+        <td>
+          Menyediakan antarmuka visual pengguna yang cepat, reaktif, dan intuitif. Mengelola navigasi halaman antar 5 tahapan pelayanan, rendering barcode visual tabung, auto-flagging warna nilai kritis, serta layout cetak formulir resmi RM. 21.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Application Layer</strong><br>(Backend REST API)</td>
+        <td>
+          &bull; Node.js v22.x<br>
+          &bull; Express.js 5.x<br>
+          &bull; Mongoose 9.x<br>
+          &bull; CORS &amp; Dotenv
+        </td>
+        <td>
+          Mengatur logika bisnis (*business logic*), routing API modular, kalkulasi tarif lab, generator nomor antrean harian dan barcode unik, evaluasi ambang nilai kritis otomatis, dan otorisasi digital hash Sp.PK.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Data Layer</strong><br>(Database &amp; Seeder)</td>
+        <td>
+          &bull; MongoDB 6/7<br>
+          &bull; Mongo Memory Server<br>
+          &bull; Auto-Seed Engine
+        </td>
+        <td>
+          Penyimpanan basis data dokumen JSON berkinerja tinggi. Menyimpan riwayat rekam medis pasien, rujukan, spesimen, hasil alat, dan log validasi. Dilengkapi fail-safe memory server agar langsung berjalan *out-of-the-box*.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Struktur Direktori Proyek di <code>D:\laboratorium</code></h3>
+  <pre>
+D:\laboratorium\
+├── run.bat                     # Runner Windows batch file (One-click start)
+├── README.md                   # Quickstart & panduan ringkas
+├── DOKUMENTASI_IMPLEMENTASI.md # Dokumentasi teknis lengkap (Markdown)
+├── DOKUMENTASI_IMPLEMENTASI.pdf# Dokumen implementasi format resmi cetak PDF
+│
+├── backend/                    # Server RESTful API Node.js
+│   ├── .env                    # PORT=5000, MONGODB_URI
+│   ├── package.json            # express, mongoose, cors, dotenv, mongodb-memory-server
+│   └── src/
+│       ├── server.js           # Express App loader & route binding
+│       ├── config/             # db.js (Koneksi & Fail-safe) & seedData.js (Master data)
+│       ├── models/             # Patient, Registration, Billing, Specimen, TestResult, Validation
+│       └── routes/             # Controller REST API per tahapan (patients, billing, sampling, dll.)
+│
+├── frontend/                   # Web Client Vue 3 Single Page Application
+│   ├── vite.config.js          # Vite configuration & proxy API ke port 5000
+│   ├── tailwind.config.js      # Konfigurasi utility styling medis
+│   └── src/
+│       ├── main.ts             # App mounting & Vue Router setup
+│       ├── style.css           # Styling dasar Tailwind & @media print stylesheet
+│       ├── components/         # Navbar.vue, WorkflowStepper.vue, BarcodeLabel.vue
+│       ├── views/              # DashboardView, Step1 - Step5 Views, LabReportPrintView
+│       └── services/api.js     # HTTP client fetch API
+│
+└── database/                   # Skema & Referensi Basis Data
+    ├── schema-mongodb.md       # Spesifikasi struktur dokumen Mongoose & indexing
+    ├── mongo-seed.json         # Raw export data awal kategori & parameter
+    └── schema.sql              # Referensi DDL relasional SQL
+  </pre>
+
+  <h2 class="section-title">4. ARSITEKTUR BASIS DATA (MONGODB DOCUMENT MODEL)</h2>
+  <p>
+    Data diorganisasikan dalam 8 koleksi utama dengan relasi referensial (ObjectId) untuk menjamin integritas data medis:
+  </p>
+
+  <table class="no-break">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Nama Koleksi</th>
+        <th style="width: 30%;">Key Fields</th>
+        <th>Deskripsi &amp; Aturan Validasi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>patients</code></td>
+        <td><code>mrNumber (UQ), nik, name, birthDate, gender, bloodType</code></td>
+        <td>Master data pasien. <code>mrNumber</code> diformat <code>RM-YYYY-xxxx</code> bersifat unik dan terindeks.</td>
+      </tr>
+      <tr>
+        <td><code>registrations</code></td>
+        <td><code>regNumber (UQ), queueNumber, patient, status, orderTests</code></td>
+        <td>Menyimpan siklus hidup alur. Status: <code>PENDAFTARAN &rarr; ADMINISTRASI &rarr; SAMPLING &rarr; ANALISIS &rarr; VALIDASI &rarr; SELESAI</code>.</td>
+      </tr>
+      <tr>
+        <td><code>testcategories</code></td>
+        <td><code>code (UQ), name, description</code></td>
+        <td>Kategori tes: <code>HEMATOLOGI, KIMIA_KLINIK, PROFIL_LIPID, FUNGSI_GINJAL, FUNGSI_HATI, URINALISIS, IMUNOSEROLOGI</code>.</td>
+      </tr>
+      <tr>
+        <td><code>testparameters</code></td>
+        <td><code>code, name, unit, refRangeMale, refRangeFemale, minNormal, maxNormal, criticalLow, criticalHigh, price</code></td>
+        <td>Master parameter uji laboratorium, rentang rujukan normal gender, batas nilai kritis, tarif, dan tabung yang dibutuhkan.</td>
+      </tr>
+      <tr>
+        <td><code>billings</code></td>
+        <td><code>registration, totalAmount, paymentStatus, paymentMethod, receiptNo</code></td>
+        <td>Data administrasi kasir & penjaminan. Status: <code>PENDING, LUNAS, TERVERIFIKASI_BPJS, TERVERIFIKASI_ASURANSI</code>.</td>
+      </tr>
+      <tr>
+        <td><code>specimens</code></td>
+        <td><code>registration, barcode (UQ), specimenType, containerType, sampleCondition, phlebotomistName</code></td>
+        <td>Perekaman fisik tabung spesimen, kode barcode unik (<code>SMP-YYYYMMDD-xxxx</code>), volume sampel, dan mutu fisik.</td>
+      </tr>
+      <tr>
+        <td><code>testresults</code></td>
+        <td><code>registration, parameter, resultValue, flag, instrumentName, reagentLot, analystName</code></td>
+        <td>Hasil pengukuran alat laboratorium. Flag otomatis: <code>NORMAL, LOW, HIGH, CRITICAL</code>.</td>
+      </tr>
+      <tr>
+        <td><code>validations</code></td>
+        <td><code>registration, pathologistName, doctorSip, clinicalNotes, hasCriticalValue, digitalSignatureCode</code></td>
+        <td>Hasil verifikasi dan otorisasi dokter Sp.PK lengkap dengan kode hash digital signature resmi untuk lembar cetak.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= PAGE 3 ================= -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">5. PANDUAN PENGGUNAAN APLIKASI (USER MANUAL STEP-BY-STEP)</h2>
+
+  <h3 class="sub-title">5.1 Cara Menjalankan Aplikasi</h3>
+  <div class="card">
+    <ol style="margin: 0; padding-left: 20px;">
+      <li>Buka File Explorer di Windows dan navigasikan ke folder <code>D:\laboratorium</code>.</li>
+      <li>Klik ganda (double-click) pada file <strong><code>run.bat</code></strong>.</li>
+      <li>Dua jendela konsol akan terbuka (Backend Port 5000 &amp; Frontend Port 5173).</li>
+      <li>Buka browser (Chrome / Edge) dan buka alamat: <strong style="color: #0d9488;">http://localhost:5173</strong>.</li>
+    </ol>
+  </div>
+
+  <h3 class="sub-title">5.2 Panduan Operasional Tiap Tahap Pelayanan</h3>
+
+  <div class="flow-step" style="border-left: 5px solid #0d9488; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>TAHAP 1: PENDAFTARAN &amp; PENERIMAAN RUJUKAN (Menu: /tahap-1)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Pilih mode <strong>Pasien Terdaftar</strong> (cari berdasarkan No RM / Nama) atau <strong>Pasien Baru</strong> (isi data identitas lengkap).</li>
+        <li>Pilih Asal Rujukan (Poli Penyakit Dalam, IGD, Ranap Melati, dll.) dan ketik Nama Dokter Pengirim.</li>
+        <li>Tentukan Penjaminan (<code>UMUM</code>, <code>BPJS</code>, atau <code>ASURANSI</code>) dan masukkan No. Kartu/SEP.</li>
+        <li>Centang parameter uji laboratorium yang diminta dokter pada daftar kategori (tarif terhitung otomatis).</li>
+        <li>Klik tombol <strong>"Simpan Pendaftaran &amp; Lanjut ke Administrasi &rarr;"</strong>. Nomor Antrean (LAB-xxx) otomatis terbit.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #d97706; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>TAHAP 2: PROSES ADMINISTRASI &amp; KASIR PENJAMINAN (Menu: /tahap-2)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Pilih pasien pada daftar antrean loket administrasi di sebelah kiri.</li>
+        <li>Cocokkan kembali identitas pasien, diagnosa rujukan, dan daftar pemeriksaan yang diminta.</li>
+        <li>Untuk pasien <strong>UMUM</strong>: Pilih metode bayar (Tunai, QRIS, Transfer, EDC) dan proses pelunasan kasir.</li>
+        <li>Untuk pasien <strong>BPJS / ASURANSI</strong>: Periksa eligibilitas penjaminan dan konfirmasi verifikasi klaim.</li>
+        <li>Klik tombol verifikasi pembayaran. Pasien resmi terdaftar dan diarahkan ke Bilik Sampling.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #2563eb; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>TAHAP 3: PENGAMBILAN SPESIMEN &amp; BARCODE (Menu: /tahap-3)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Panggil pasien ke bilik flebotomi berdasarkan nomor antrean.</li>
+        <li>Periksa petunjuk sistem mengenai warna tabung yang wajib disiapkan (Tabung Ungu EDTA, Tabung Kuning Gel, Pot Urine).</li>
+        <li>Klik <strong>"Cetak Label Barcode"</strong> dan tempelkan label barcode fisik (SMP-xxx) melingkar pada badan tabung.</li>
+        <li>Lakukan pengambilan sampel sesuai SOP medis, periksa kondisi fisik sampel (Baik/Normal, Hemolisis, dll.), lalu klik <strong>"Konfirmasi Sampel Diambil &amp; Kirim ke Ruang Analitik &rarr;"</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #9333ea; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>TAHAP 4: RUANG ANALITIK &amp; INPUT HASIL ALAT (Menu: /tahap-4)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Buka worklist sampel yang masuk pada ruang mesin otomatis medis.</li>
+        <li>Ketikkan nilai hasil pengukuran dari instrumen (Sysmex / Cobas / Mikroskop).</li>
+        <li>Sistem secara langsung mengevaluasi nilai rujukan normal dan memunculkan badge: <code>NORMAL</code>, <code>LOW</code>, <code>HIGH</code>, atau <code>CRITICAL ALERT</code>.</li>
+        <li>Jika nilai kritis terpicu, banner peringatan bahaya merah otomatis aktif sebagai peringatan darurat.</li>
+        <li>Lengkapi data nama alat dan lot reagen, lalu klik <strong>"Simpan Hasil &amp; Kirim ke Dokter Sp.PK untuk Validasi &rarr;"</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #e11d48; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>TAHAP 5: VALIDASI &amp; OTORISASI DOKTER SP.PK (Menu: /tahap-5)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Dokter Spesialis Patologi Klinik membuka antrean peninjauan hasil (pasien bernilai kritis disorot merah berkedip).</li>
+        <li>Tinjau keselarasan hasil laboratorium dengan diagnosa klinis pengantar dokter perujuk.</li>
+        <li>Jika ada nilai kritis: Lakukan pelaporan telepon darurat ke DPJP dan catat waktu pelaporan pada form.</li>
+        <li>Tuliskan catatan ekspertise patologi klinik atau interpretasi diagnostik pada kolom evaluasi.</li>
+        <li>Klik <strong>"Validasi &amp; Otorisasi Digital Resmi"</strong> untuk menerbitkan tanda tangan digital dan mengunci dokumen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #059669; margin-bottom: 12px;">
+    <div class="flow-step-header">
+      <span>CETAK LEMBAR HASIL RESMI RM. 21 (Menu: /cetak-hasil/:id)</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li>Buka lembar cetak hasil melalui tombol selesai atau dari baris tabel dashboard.</li>
+        <li>Format standar formulir RM. 21 / LAB otomatis terisi rapi: Kop RSUD, data pasien, tabel hasil per kategori, nilai rujukan, ekspertise dokter, dan tanda tangan QR verifikasi digital.</li>
+        <li>Klik tombol <strong>"🖨️ Cetak Lembar Hasil Resmi / Simpan PDF"</strong> untuk mencetak ke kertas fisik atau ekspor ke PDF.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left: 5px solid #0d9488;">
+    <div class="flow-step-header">
+      <span>MODUL MASTER DATA: PENGATURAN PELAYANAN &amp; TARIF (Menu: /pengaturan-tarif)</span>
+      <span class="badge badge-teal">Administrator / Supervisor Lab</span>
+    </div>
+    <div class="flow-step-desc">
+      <ul style="margin: 4px 0 0 0; padding-left: 18px;">
+        <li><strong>Tambah &amp; Edit Layanan</strong>: Mengubah nama pemeriksaan, kode tes, dan tarif biaya (Rp).</li>
+        <li><strong>Konfigurasi Nilai Rujukan</strong>: Mengatur nilai rujukan pria, wanita, satuan, dan ambang batas bawah/atas normal.</li>
+        <li><strong>Konfigurasi Nilai Kritis</strong>: Menentukan batas kritis bawah (&le;) dan batas kritis atas (&ge;) untuk memicu *Critical Value Alert*.</li>
+        <li><strong>Spesimen &amp; Tabung</strong>: Menentukan jenis spesimen dan warna tabung (Ungu EDTA, Kuning Gel, Pot Urine) yang akan direkomendasikan sistem pada bilik flebotomi.</li>
+        <li><strong>Kelola Kategori Pemeriksaan</strong>: Menambah atau mengedit kategori uji (Hematologi, Kimia Darah, Mikrobiologi, dll.).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ================= PAGE 4 ================= -->
+  <div class="page-break"></div>
+
+  <h2 class="section-title">6. STANDAR PROTOKOL KESELAMATAN PASIEN &amp; NILAI KRITIS</h2>
+  <p>
+    Untuk memenuhi standar akreditasi rumah sakit (STARKES), sistem LIS telah dilengkapi aturan otomatis deteksi Nilai Kritis (*Critical Values*) yang wajib segera dilaporkan ke dokter perawat ruangan (*Read-Back Communication Protocol*):
+  </p>
+
+  <table class="no-break">
+    <thead>
+      <tr>
+        <th>Nama Parameter Uji</th>
+        <th>Satuan</th>
+        <th>Rentang Normal Rujukan</th>
+        <th>Batas Bawah Nilai Kritis</th>
+        <th>Batas Atas Nilai Kritis</th>
+        <th>Implikasi Bahaya Klinis Pasien</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Hemoglobin (Hb)</strong></td>
+        <td>g/dL</td>
+        <td>12.0 - 17.5</td>
+        <td><strong style="color: #e11d48;">&le; 7.0</strong></td>
+        <td><strong style="color: #e11d48;">&ge; 20.0</strong></td>
+        <td>Anemia Gravis / Syok Hipovolemik / Polisitemia Berat</td>
+      </tr>
+      <tr>
+        <td><strong>Leukosit (WBC)</strong></td>
+        <td>/uL</td>
+        <td>4.500 - 11.000</td>
+        <td><strong style="color: #e11d48;">&le; 2.000</strong></td>
+        <td><strong style="color: #e11d48;">&ge; 30.000</strong></td>
+        <td>Agranulositosis berat / Reaksi Leukemoid / Sepsis</td>
+      </tr>
+      <tr>
+        <td><strong>Trombosit (PLT)</strong></td>
+        <td>/uL</td>
+        <td>150.000 - 450.000</td>
+        <td><strong style="color: #e11d48;">&le; 50.000</strong></td>
+        <td><strong style="color: #e11d48;">&ge; 1.000.000</strong></td>
+        <td>Risiko Perdarahan Spontan Serebral / Trombositosis Ekstrem</td>
+      </tr>
+      <tr>
+        <td><strong>Glukosa Darah (GDS/GDP)</strong></td>
+        <td>mg/dL</td>
+        <td>70 - 140</td>
+        <td><strong style="color: #e11d48;">&le; 45</strong></td>
+        <td><strong style="color: #e11d48;">&ge; 450</strong></td>
+        <td>Koma Hipoglikemia / Ketoasidosis Diabetikum (KAD) / HHS</td>
+      </tr>
+      <tr>
+        <td><strong>Kreatinin Serum</strong></td>
+        <td>mg/dL</td>
+        <td>0.6 - 1.3</td>
+        <td>-</td>
+        <td><strong style="color: #e11d48;">&ge; 5.0</strong></td>
+        <td>Gagal Ginjal Akut (*Acute Kidney Injury*) / Asidosis Uremik</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert-box alert-critical no-break">
+    <strong>SOP Pelaporan Nilai Kritis Rumah Sakit:</strong> Petugas laboratorium wajib menghubungi dokter penanggung jawab pelayanan (DPJP) atau perawat jaga ruangan dalam waktu &le; 15 menit sejak nilai kritis tervalidasi. Dokter Sp.PK mencatat waktu pelaporan, nama penerima, dan metode komunikasi (*Tulis - Baca - Konfirmasi / TBK*) pada sistem LIS sebelum hasil akhir disahkan.
+  </div>
+
+  <h2 class="section-title">7. SISTEM AUTENTIKASI LOGIN &amp; MATRIKS HAK AKSES PERAN (RBAC)</h2>
+  <p>
+    Sistem menerapkan pembatasan hak akses berbasis peran (<em>Role-Based Access Control - RBAC</em>) secara ketat. Setiap akun hanya diizinkan mengakses modul yang menjadi wewenang tugasnya:
+  </p>
+
+  <table class="no-break">
+    <thead>
+      <tr>
+        <th>Role / Peran</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Nama Petugas</th>
+        <th>Modul yang Dapat Dibuka</th>
+        <th>Batasan Hak Akses</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-purple">ANALIS</span></td>
+        <td><code>analis</code></td>
+        <td><code>analis123</code></td>
+        <td><strong>Fitriani, S.Tr.Kes</strong><br><small>Pranata Lab Medis</small></td>
+        <td><strong>Tahap 4: Ruang Analitik &amp; Form Input Hasil</strong></td>
+        <td>Hanya form input hasil. Dilarang membuka pendaftaran, kasir, flebotomi, validasi, dan tarif.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-rose">DOKTER_SPPK</span></td>
+        <td><code>doktersppk</code></td>
+        <td><code>sppk123</code></td>
+        <td><strong>dr. Bambang Irawan, Sp.PK</strong><br><small>Penanggung Jawab Lab</small></td>
+        <td><strong>Tahap 5: Validasi &amp; Otorisasi Sp.PK, Cetak RM. 21</strong></td>
+        <td>Khusus lembar peninjauan klinis, ekspertise patologi klinik, dan pengesahan digital hasil.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-blue">FLEBOTOMIS</span></td>
+        <td><code>flebotomis</code></td>
+        <td><code>sampling123</code></td>
+        <td><strong>Ns. Rahmat Hidayat, A.Md.AK</strong><br><small>Petugas Sampling</small></td>
+        <td><strong>Tahap 3: Bilik Sampling &amp; Cetak Barcode Spesimen</strong></td>
+        <td>Khusus pemanggilan pasien, persiapan tabung spesimen, dan cetak barcode stiker.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-amber">KASIR</span></td>
+        <td><code>kasir</code></td>
+        <td><code>kasir123</code></td>
+        <td><strong>Budi Santoso</strong><br><small>Kasir &amp; Loket Penjaminan</small></td>
+        <td><strong>Tahap 2: Loket Administrasi &amp; Kasir Penjaminan</strong></td>
+        <td>Khusus verifikasi rujukan, pelunasan kasir pasien umum, dan verifikasi klaim BPJS/Asuransi.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-teal">RESEPSIONIS</span></td>
+        <td><code>resepsionis</code></td>
+        <td><code>pendaftaran123</code></td>
+        <td><strong>Siti Rahma, A.Md</strong><br><small>Petugas Pendaftaran</small></td>
+        <td><strong>Tahap 1: Pendaftaran Pasien &amp; Formulir Rujukan</strong></td>
+        <td>Khusus pendaftaran pasien rekam medis, rujukan poli/IGD, checklist tes, dan nomor antrean.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-emerald">ADMIN</span></td>
+        <td><code>admin</code></td>
+        <td><code>admin123</code></td>
+        <td><strong>dr. H. Kurniawan, Sp.PK</strong><br><small>Kepala Instalasi &amp; Admin</small></td>
+        <td><strong>Seluruh Modul (Tahap 1 s/d 5), Pengaturan Tarif, &amp; Manajemen Pengguna</strong></td>
+        <td>Akses penuh (*Super Administrator*) tanpa batasan halaman.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert-box no-break">
+    <strong>Proteksi Route Guard:</strong> Jika pengguna (misal akun <code>analis</code>) mencoba mengakses rute di luar wewenangnya (misal mengetik URL <code>/tahap-1</code> atau <code>/pengaturan-tarif</code> di address bar), sistem secara otomatis memblokir akses, memunculkan notifikasi larangan, dan mengembalikan pengguna ke halaman yang diizinkan (<code>/tahap-4</code>).
+  </div>
+
+  <h3 style="color: #0f172a; margin-top: 18px; margin-bottom: 8px; font-size: 11pt;">7.2 Master Manajemen Pengguna &amp; Penetapan Role (Administrator)</h3>
+  <p>
+    Untuk memfasilitasi penambahan petugas baru, rotasi jabatan, serta reset kata sandi staf laboratorium secara mandiri tanpa harus mengubah kode pemrograman, Administrator memiliki akses ke antarmuka <strong>Master Manajemen Pengguna &amp; Role</strong> pada URL <code>/manajemen-pengguna</code>.
+  </p>
+
+  <div class="kpi-grid no-break" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 12px;">
+    <div class="kpi-card">
+      <div class="kpi-num">1. Form Registrasi User</div>
+      <div class="kpi-label">Pendaftaran akun baru lengkap dengan nama, username unik, password awal, NIP/SIP, dan pemilihan role alur kerja.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">2. Edit &amp; Rotasi Role</div>
+      <div class="kpi-label">Memperbarui profil petugas serta mengalihkan wewenang alur (misal analis dipindah ke sampling).</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">3. Reset Password</div>
+      <div class="kpi-label">Admin dapat langsung mereset kata sandi staf jika staf bersangkutan lupa password.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">4. Soft Lock &amp; Safety</div>
+      <div class="kpi-label">Nonaktifkan akun sementara saat cuti/mutasi tanpa menghapus histori rekam medis yang pernah diproses.</div>
+    </div>
+  </div>
+
+  <table class="no-break">
+    <thead>
+      <tr>
+        <th>Role Petugas</th>
+        <th style="text-align:center;">Tahap 1 (Daftar)</th>
+        <th style="text-align:center;">Tahap 2 (Kasir)</th>
+        <th style="text-align:center;">Tahap 3 (Sampling)</th>
+        <th style="text-align:center;">Tahap 4 (Hasil Lab)</th>
+        <th style="text-align:center;">Tahap 5 (Validasi)</th>
+        <th style="text-align:center;">Cetak RM. 21</th>
+        <th style="text-align:center;">Tarif Master</th>
+        <th style="text-align:center;">User Master</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>👑 ADMIN</strong></td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+      </tr>
+      <tr>
+        <td><strong>📝 RESEPSIONIS</strong></td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+      </tr>
+      <tr>
+        <td><strong>💳 KASIR</strong></td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+      </tr>
+      <tr>
+        <td><strong>🩸 FLEBOTOMIS</strong></td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+      </tr>
+      <tr style="background-color: #f0fdf4;">
+        <td><strong>🔬 ANALIS</strong></td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+      </tr>
+      <tr style="background-color: #fff1f2;">
+        <td><strong>🩺 DOKTER_SPPK</strong></td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#16a34a; font-weight:bold;">✅</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+        <td style="text-align:center; color:#cbd5e1;">❌</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">8. LEMBAR PENGESAHAN DOKUMEN IMPLEMENTASI</h2>
+  <p>
+    Dokumen implementasi teknis dan panduan operasional Sistem Informasi Manajemen Laboratorium Rumah Sakit (SIMRS-LAB) ini telah disetujui untuk diimplementasikan pada Instalasi Laboratorium Patologi Klinik RSUD Lubuk Sikaping.
+  </p>
+
+  <div class="signature-grid">
+    <div class="sig-box">
+      <div style="font-size: 8.5pt; color: #475569;">Penanggung Jawab Teknis SIMRS / IT:</div>
+      <div class="sig-space">
+        <div class="stamp-qr">TERVERIFIKASI SISTEM IT<br>KODE: IT-SIMRS-2026-OK</div>
+      </div>
+      <div class="sig-name">Tim Pengembang SIMRS LIS</div>
+      <div class="sig-role">Unit Pengelola Teknologi Informasi RS</div>
+    </div>
+
+    <div class="sig-box">
+      <div style="font-size: 8.5pt; color: #475569;">Dokter Penanggung Jawab Laboratorium:</div>
+      <div class="sig-space">
+        <div class="stamp-qr">DIGITAL SIGNED SP.PK<br>KODE: DS-SPPK-0906-88A92F</div>
+      </div>
+      <div class="sig-name">dr. Bambang Irawan, Sp.PK</div>
+      <div class="sig-role">SIP: 503/449/SIP-DS/DPM-PTSP/2023</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; border-top: 1px solid #cbd5e1; padding-top: 6px; font-size: 7.5pt; color: #94a3b8; display: flex; justify-content: space-between;">
+    <span>Dokumen Resmi SIMRS-LAB RSUD Lubuk Sikaping &copy; 2026</span>
+    <span>Formulir Terstandar RM. 21 / LAB</span>
+  </div>
+
+</body>
+</html>
