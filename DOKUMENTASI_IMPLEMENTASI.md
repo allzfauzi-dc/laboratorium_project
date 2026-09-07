@@ -30,6 +30,7 @@
    - 5.10 [Panduan Master Manajemen Pengguna & Role Akses](#510-panduan-master-manajemen-pengguna--role-akses)
 6. [Fitur Keamanan & Penanganan Nilai Kritis (Critical Value Alert)](#6-fitur-keamanan--penanganan-nilai-kritis)
 7. [Troubleshooting & Solusi Masalah Teknis](#7-troubleshooting--solusi-masalah-teknis)
+8. [Panduan Deployment Cloud & Upload Database (MongoDB Atlas)](#8-panduan-deployment-cloud--upload-database-mongodb-atlas)
 
 ---
 
@@ -732,6 +733,56 @@ Aplikasi ini dilengkapi logika keselamatan pasien otomatis (*Patient Safety Algo
 | **Ingin menghubungkan ke Cloud MongoDB Atlas** | Ingin data tersimpan di server cloud. | Buka `D:\laboratorium\backend\.env`, ganti `MONGODB_URI` dengan connection string Atlas Anda, contoh: `MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/laboratorium?retryWrites=true&w=majority`. |
 | **Ingin mengulang / mereset data demo ke kondisi awal** | Data sampel sudah banyak diubah saat uji coba. | Hapus database `laboratorium` di MongoDB, lalu restart backend (`npm start`). Sistem akan otomatis menjalankan ulang *auto-seeding* master data. |
 | **Tampilan cetak hasil lab terpotong saat diprint** | Pengaturan kertas di browser belum diatur ke A4. | Pada dialog print browser, pilih ukuran kertas **A4**, orientasi **Portrait**, dan aktifkan opsi **"Background graphics"** agar warna kop dan tabel tampil sempurna. |
+
+---
+
+## 8. PANDUAN DEPLOYMENT CLOUD & UPLOAD DATABASE (MONGODB ATLAS)
+
+Saat sistem di-deploy ke internet untuk operasional nyata rumah sakit, database tidak lagi menggunakan localhost, melainkan di-hosting di cloud database **MongoDB Atlas** (Tier M0 Free 512 MB gratis selamanya).
+
+### 8.1 Arsitektur Produksi 3-Tier
+1. **Frontend (Vercel)**: Menghasilkan antarmuka web responsif (`https://simrs-lab.vercel.app`).
+2. **Backend (Railway / Render / VPS)**: Server Node.js/Express yang melayani endpoint REST API (`https://simrs-backend.up.railway.app/api`).
+3. **Database (MongoDB Atlas Cloud)**: Cluster cloud yang menyimpan seluruh data rekam medis, billing, spesimen, dan hasil lab.
+
+### 8.2 Langkah Pembuatan Cluster MongoDB Atlas
+1. Daftar akun di [https://www.mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas).
+2. Buat cluster baru dengan memilih **M0 Shared (Free)**, region **Singapore / Jakarta**.
+3. Buat Database User (misal username: `admin_lab`, password: `PasswordAnda123`).
+4. Pada menu **Network Access**, tambahkan IP Whitelist `0.0.0.0/0` (Allow Access from Anywhere) agar backend cloud dapat terhubung.
+5. Klik **Connect** -> **Drivers** -> Salin Connection String:
+   ```text
+   mongodb+srv://admin_lab:PasswordAnda123@cluster0.xxxxx.mongodb.net/laboratorium?retryWrites=true&w=majority
+   ```
+
+### 8.3 Cara Mengupload Data Master ke MongoDB Atlas
+Tersedia 2 cara utama:
+
+#### Cara 1: Menggunakan Script Seeder 1-Baris (`npm run seed`)
+Dari komputer lokal, jalankan perintah berikut di folder backend:
+```bash
+cd D:\laboratorium\backend
+npm run seed -- "mongodb+srv://admin_lab:PasswordAnda123@cluster0.xxxxx.mongodb.net/laboratorium?retryWrites=true&w=majority"
+```
+Script `seedAtlas.js` akan otomatis menghubungkan komputer Anda ke MongoDB Atlas di cloud dan mengunggah seluruh:
+- 6 Akun Pengguna & Wewenang Role RBAC
+- Master Kategori Pemeriksaan Lab
+- Master Parameter Uji, Tarif (Rp), Rentang Normal & Batas Nilai Kritis
+- Data Pasien & Registrasi Demo
+
+*(Untuk mereset ulang seluruh data cloud dari nol, jalankan `npm run seed:force -- "<URI_ATLAS>"`).*
+
+#### Cara 2: Otomatis saat Backend Cloud Dinyalakan (Auto-Seed)
+Sistem backend SIMRS LIS telah dilengkapi auto-seeder otomatis. Cukup masukkan Connection String Atlas ke dalam **Environment Variables** di hosting backend Anda:
+- `MONGODB_URI` = `mongodb+srv://admin_lab:PasswordAnda123@cluster0.xxxxx.mongodb.net/laboratorium?retryWrites=true&w=majority`
+
+Saat server backend pertama kali menyala dan mendeteksi database di cloud masih kosong, backend secara otomatis melakukan inisialisasi seluruh data master ke cloud.
+
+### 8.4 Menghubungkan Frontend Vercel ke Backend Cloud
+Di dashboard Vercel -> Project Settings -> **Environment Variables**:
+- **Key**: `VITE_API_URL`
+- **Value**: `https://backend-simrs-anda.up.railway.app/api`
+Lalu klik **Redeploy**.
 
 ---
 

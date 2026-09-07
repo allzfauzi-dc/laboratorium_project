@@ -974,7 +974,29 @@ D:\laboratorium\
     </tbody>
   </table>
 
-  <h2 class="section-title">8. LEMBAR PENGESAHAN DOKUMEN IMPLEMENTASI</h2>
+  <div class="page-break"></div>
+
+  <h2 class="section-title">8. PANDUAN DEPLOYMENT CLOUD &amp; UPLOAD DATABASE (MONGODB ATLAS)</h2>
+  <p>
+    Setelah aplikasi siap digunakan secara luas, basis data dipindahkan dari localhost komputer lokal ke cloud database terkelola <strong>MongoDB Atlas</strong> (Tier M0 Free 512 MB gratis selamanya).
+  </p>
+
+  <div class="kpi-grid no-break" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 15px;">
+    <div class="kpi-card">
+      <div class="kpi-num">1. Cluster Atlas (Gratis)</div>
+      <div class="kpi-label">Buat cluster gratis di mongodb.com/cloud/atlas, buat user admin database dan aktifkan whitelist IP <code>0.0.0.0/0</code> agar server cloud dapat terhubung.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">2. Upload Data Otomatis</div>
+      <div class="kpi-label">Jalankan perintah <code>npm run seed -- "URI_ATLAS"</code> untuk mengunggah otomatis seluruh master tarif, kategori tes, dan 6 akun login petugas.</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">3. Integrasi Vercel</div>
+      <div class="kpi-label">Pasang <code>VITE_API_URL</code> di Vercel Environment Variables yang mengarah ke URL backend cloud, lalu lakukan Redeploy.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">9. LEMBAR PENGESAHAN DOKUMEN IMPLEMENTASI</h2>
   <p>
     Dokumen implementasi teknis dan panduan operasional Sistem Informasi Manajemen Laboratorium Rumah Sakit (SIMRS-LAB) ini telah disetujui untuk diimplementasikan pada Instalasi Laboratorium Patologi Klinik RSUD Lubuk Sikaping.
   </p>

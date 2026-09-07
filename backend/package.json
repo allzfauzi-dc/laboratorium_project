@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "seed": "node src/scripts/seedAtlas.js",
+    "seed:force": "node src/scripts/seedAtlas.js --force"
   },
   "keywords": [],
   "author": "",
