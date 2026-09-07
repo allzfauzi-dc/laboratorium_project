@@ -79,7 +79,7 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   document.title = `${to.meta.title || 'Laboratorium RS'} | SIMRS LIS`;
 
   // 1. Cek autentikasi: jika belum login dan bukan ke /login -> arahkan ke /login
