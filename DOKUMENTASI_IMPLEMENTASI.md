@@ -274,9 +274,10 @@ D:\laboratorium\
 │   ├── postcss.config.js               # PostCSS plugin loader
 │   └── src/
 │       ├── main.ts                     # Inisialisasi Vue app & plugin router
+│       ├── env.d.ts                    # Deklarasi tipe modul Vue (*.vue) untuk TypeScript
 │       ├── style.css                   # Direktif Tailwind CSS & styling media cetak (@media print)
 │       ├── router/
-│       │   └── index.js                # Definisi route URL, RBAC, & Navigation Guard
+│       │   └── index.ts                # Definisi route URL, RBAC, & Navigation Guard (TypeScript)
 │       ├── services/
 │       │   ├── api.js                  # Client fetch API ke seluruh endpoint backend Express
 │       │   └── auth.js                 # State session login, token, & route guard helper
