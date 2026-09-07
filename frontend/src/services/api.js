@@ -21,6 +21,14 @@ async function request(endpoint, options = {}) {
     }
     return data;
   } catch (err) {
+    if (err.name === 'TypeError' && err.message.toLowerCase().includes('fetch')) {
+      const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      if (isHttps) {
+        throw new Error('Gagal terhubung ke Backend API. Pastikan backend server cloud sudah berjalan dan VITE_API_URL sudah disetel di Vercel.');
+      } else {
+        throw new Error('Gagal terhubung ke Server Backend (port 5000). Pastikan server backend aktif (jalankan run.bat).');
+      }
+    }
     console.error(`API Error on ${endpoint}:`, err);
     throw err;
   }

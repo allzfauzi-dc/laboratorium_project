@@ -73,8 +73,17 @@ export const authState = {
 
       return data.data.user;
     } catch (err) {
-      state.loginError = err.message;
-      throw err;
+      let message = err.message || 'Login gagal';
+      if (err.name === 'TypeError' && err.message.toLowerCase().includes('fetch')) {
+        const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+        if (isHttps) {
+          message = 'Gagal terhubung ke Backend API. Aplikasi berjalan di HTTPS (Vercel), tetapi server backend cloud belum dihubungkan ke VITE_API_URL.';
+        } else {
+          message = 'Gagal terhubung ke Server Backend (port 5000). Pastikan backend sudah dinyalakan (jalankan run.bat atau npm start di backend).';
+        }
+      }
+      state.loginError = message;
+      throw new Error(message);
     }
   },
 
