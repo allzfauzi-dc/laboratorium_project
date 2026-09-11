@@ -187,6 +187,21 @@
             />
 
             <button 
+              @click="exportToExcel" 
+              class="p-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition whitespace-nowrap text-xs flex items-center gap-1 font-semibold"
+              title="Export to Excel"
+            >
+              <span>📊</span> Excel
+            </button>
+            <button 
+              @click="exportToPDF" 
+              class="p-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition whitespace-nowrap text-xs flex items-center gap-1 font-semibold"
+              title="Export to PDF"
+            >
+              <span>📄</span> PDF
+            </button>
+
+            <button 
               @click="loadData" 
               class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap text-xs flex items-center gap-1 font-semibold"
               title="Muat ulang data"
@@ -298,6 +313,9 @@ import { useRouter } from 'vue-router';
 import { api } from '../services/api';
 import { authState } from '../services/auth';
 import WorkflowStepper from '../components/WorkflowStepper.vue';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const router = useRouter();
 const loading = ref(false);
@@ -360,6 +378,66 @@ const formatDateTime = (dateStr) => {
     date: d.toLocaleDateString('id-ID', dateOptions),
     time: d.toLocaleTimeString('id-ID', timeOptions) + ' WIB'
   };
+};
+
+const exportToExcel = () => {
+  if (allRegistrations.value.length === 0) return alert('Tidak ada data untuk diexport');
+  
+  const data = allRegistrations.value.map((reg, index) => ({
+    'No': index + 1,
+    'No Antrean': reg.queueNumber,
+    'Tanggal & Waktu': `${formatDateTime(reg.createdAt).date} ${formatDateTime(reg.createdAt).time}`,
+    'No Registrasi': reg.regNumber,
+    'No RM': reg.patient?.mrNumber,
+    'Nama Pasien': reg.patient?.name,
+    'Penjamin': reg.patientType,
+    'Asal Rujukan': reg.referralSource,
+    'Pemeriksaan': reg.orderTests?.map(o => o.parameter?.name).join(', ') || '-',
+    'Status': formatStatusLabel(reg.status)
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Riwayat Laboratorium');
+  
+  XLSX.writeFile(workbook, `Laporan_Lab_${formatDateInput(new Date())}.xlsx`);
+};
+
+const exportToPDF = () => {
+  if (allRegistrations.value.length === 0) return alert('Tidak ada data untuk diexport');
+  
+  const doc = new jsPDF('landscape');
+  doc.setFontSize(16);
+  doc.text('Laporan Riwayat Pelayanan Laboratorium', 14, 15);
+  doc.setFontSize(10);
+  doc.text(`Tanggal Cetak: ${formatDateTime(new Date().toISOString()).date} ${formatDateTime(new Date().toISOString()).time}`, 14, 22);
+
+  const tableColumn = ["No", "Antrean", "Tgl & Waktu", "No Reg / RM", "Nama Pasien", "Penjamin", "Rujukan", "Status"];
+  const tableRows = [];
+
+  allRegistrations.value.forEach((reg, index) => {
+    const regData = [
+      index + 1,
+      reg.queueNumber,
+      `${formatDateTime(reg.createdAt).date}\n${formatDateTime(reg.createdAt).time}`,
+      `${reg.regNumber}\n${reg.patient?.mrNumber}`,
+      reg.patient?.name,
+      reg.patientType,
+      reg.referralSource,
+      formatStatusLabel(reg.status)
+    ];
+    tableRows.push(regData);
+  });
+
+  doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 28,
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [15, 118, 110] } // teal-700
+  });
+
+  doc.save(`Laporan_Lab_${formatDateInput(new Date())}.pdf`);
 };
 
 const currentActiveWorkflowStep = computed(() => {
