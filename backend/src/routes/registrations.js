@@ -11,18 +11,32 @@ const Validation = require('../models/Validation');
 // List registrations
 router.get('/', async (req, res) => {
   try {
-    const { status, search } = req.query;
+    const { status, search, startDate, endDate } = req.query;
     let query = {};
 
     if (status && status !== 'ALL') {
       query.status = status;
     }
 
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        query.createdAt.$gte = start;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = end;
+      }
+    }
+
     let registrations = await Registration.find(query)
       .populate('patient')
       .populate('orderTests.parameter')
       .sort({ createdAt: -1 })
-      .limit(100);
+      .limit(200);
 
     if (search) {
       const s = search.toLowerCase();

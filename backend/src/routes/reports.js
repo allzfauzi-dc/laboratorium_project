@@ -10,13 +10,30 @@ const Billing = require('../models/Billing');
 // Dashboard Overview Statistics
 router.get('/stats', async (req, res) => {
   try {
+    const { startDate, endDate } = req.query;
+    let dateQuery = {};
+
+    if (startDate || endDate) {
+      dateQuery.createdAt = {};
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        dateQuery.createdAt.$gte = start;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        dateQuery.createdAt.$lte = end;
+      }
+    }
+
     const totalPatients = await Patient.countDocuments();
-    const totalRegistrations = await Registration.countDocuments();
-    const countAdministrasi = await Registration.countDocuments({ status: 'ADMINISTRASI' });
-    const countSampling = await Registration.countDocuments({ status: 'SAMPLING' });
-    const countAnalisis = await Registration.countDocuments({ status: 'ANALISIS' });
-    const countValidasi = await Registration.countDocuments({ status: 'VALIDASI' });
-    const countSelesai = await Registration.countDocuments({ status: 'SELESAI' });
+    const totalRegistrations = await Registration.countDocuments(dateQuery);
+    const countAdministrasi = await Registration.countDocuments({ ...dateQuery, status: 'ADMINISTRASI' });
+    const countSampling = await Registration.countDocuments({ ...dateQuery, status: 'SAMPLING' });
+    const countAnalisis = await Registration.countDocuments({ ...dateQuery, status: 'ANALISIS' });
+    const countValidasi = await Registration.countDocuments({ ...dateQuery, status: 'VALIDASI' });
+    const countSelesai = await Registration.countDocuments({ ...dateQuery, status: 'SELESAI' });
 
     res.json({
       success: true,

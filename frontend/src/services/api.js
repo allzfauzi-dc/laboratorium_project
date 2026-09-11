@@ -36,7 +36,12 @@ async function request(endpoint, options = {}) {
 
 export const api = {
   // Stats & Health
-  getStats: () => request('/reports/stats'),
+  getStats: (startDate = '', endDate = '') => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    return request(`/reports/stats?${params.toString()}`);
+  },
   getHealth: () => request('/health'),
 
   // Patients
@@ -80,10 +85,12 @@ export const api = {
   }),
 
   // Tahap 1: Registrations
-  getRegistrations: (status = 'ALL', search = '') => {
+  getRegistrations: (status = 'ALL', search = '', startDate = '', endDate = '') => {
     const params = new URLSearchParams();
     if (status) params.append('status', status);
     if (search) params.append('search', search);
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
     return request(`/registrations?${params.toString()}`);
   },
   getRegistrationById: (id) => request(`/registrations/${id}`),

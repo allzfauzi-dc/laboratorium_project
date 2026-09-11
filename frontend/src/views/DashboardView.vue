@@ -93,45 +93,107 @@
     <!-- Active Workflow Stepper Overview -->
     <WorkflowStepper :activeStep="currentActiveWorkflowStep" />
 
-    <!-- Table of Registrations & Status -->
+    <!-- Table of Registrations & Status with Date Filter -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <div>
-          <h2 class="font-bold text-sm text-slate-900">Daftar Pasien & Status Pelayanan Terkini</h2>
-          <p class="text-xs text-slate-500">Pantau pergerakan sampel dari loket awal hingga hasil divalidasi</p>
+      <!-- Date Filter Bar & Header -->
+      <div class="p-4 border-b border-slate-200 space-y-3">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <span>📋</span> Daftar Pasien &amp; Riwayat Pelayanan
+            </h2>
+            <p class="text-xs text-slate-500">Pantau pergerakan sampel terkini maupun riwayat transaksi laboratorium berdasarkan tanggal</p>
+          </div>
+
+          <!-- Filter Presets & Quick Buttons -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+            <span class="text-slate-400 text-[11px] font-bold mr-1">📅 Filter Tanggal:</span>
+            <button 
+              @click="setDatePreset('ALL')"
+              class="px-2.5 py-1 rounded-lg transition border"
+              :class="datePreset === 'ALL' ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
+            >
+              Semua
+            </button>
+            <button 
+              @click="setDatePreset('TODAY')"
+              class="px-2.5 py-1 rounded-lg transition border"
+              :class="datePreset === 'TODAY' ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
+            >
+              Hari Ini
+            </button>
+            <button 
+              @click="setDatePreset('LAST_7_DAYS')"
+              class="px-2.5 py-1 rounded-lg transition border"
+              :class="datePreset === 'LAST_7_DAYS' ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
+            >
+              7 Hari Terakhir
+            </button>
+            <button 
+              @click="setDatePreset('THIS_MONTH')"
+              class="px-2.5 py-1 rounded-lg transition border"
+              :class="datePreset === 'THIS_MONTH' ? 'bg-teal-600 text-white border-teal-600 font-bold' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'"
+            >
+              Bulan Ini
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <!-- Filter status -->
-          <select 
-            v-model="filterStatus" 
-            @change="loadRegistrations"
-            class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 outline-none focus:border-teal-500 font-medium"
-          >
-            <option value="ALL">Semua Status ({{ allRegistrations.length }})</option>
-            <option value="ADMINISTRASI">Tahap 2: Administrasi</option>
-            <option value="SAMPLING">Tahap 3: Sampling</option>
-            <option value="ANALISIS">Tahap 4: Analisis</option>
-            <option value="VALIDASI">Tahap 5: Validasi Sp.PK</option>
-            <option value="SELESAI">Selesai / Cetak Hasil</option>
-          </select>
+        <!-- Custom Date Range Picker, Status Filter & Search -->
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+              <span class="text-slate-500 font-semibold">Dari:</span>
+              <input 
+                type="date" 
+                v-model="startDate" 
+                @change="onCustomDateChange"
+                class="bg-transparent outline-none font-mono text-slate-800 text-xs"
+              />
+            </div>
+            <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+              <span class="text-slate-500 font-semibold">S/D:</span>
+              <input 
+                type="date" 
+                v-model="endDate" 
+                @change="onCustomDateChange"
+                class="bg-transparent outline-none font-mono text-slate-800 text-xs"
+              />
+            </div>
 
-          <!-- Search -->
-          <input 
-            type="text" 
-            v-model="searchQuery" 
-            @input="loadRegistrations"
-            placeholder="Cari No RM / Nama / Antrean..." 
-            class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 w-full sm:w-64 outline-none focus:border-teal-500"
-          />
+            <!-- Filter Status -->
+            <select 
+              v-model="filterStatus" 
+              @change="loadData"
+              class="text-xs border border-slate-300 rounded-lg px-2.5 py-1.5 bg-slate-50 outline-none focus:border-teal-500 font-semibold text-slate-700"
+            >
+              <option value="ALL">Semua Status ({{ allRegistrations.length }})</option>
+              <option value="ADMINISTRASI">Tahap 2: Administrasi</option>
+              <option value="SAMPLING">Tahap 3: Sampling</option>
+              <option value="ANALISIS">Tahap 4: Analisis</option>
+              <option value="VALIDASI">Tahap 5: Validasi Sp.PK</option>
+              <option value="SELESAI">Selesai / Cetak Hasil</option>
+            </select>
+          </div>
 
-          <button 
-            @click="loadData" 
-            class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition"
-            title="Muat ulang data"
-          >
-            🔄
-          </button>
+          <div class="flex items-center gap-2 flex-1 md:flex-initial">
+            <!-- Search -->
+            <input 
+              type="text" 
+              v-model="searchQuery" 
+              @input="loadRegistrations"
+              placeholder="Cari No RM / Nama / Antrean..." 
+              class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 w-full md:w-64 outline-none focus:border-teal-500"
+            />
+
+            <button 
+              @click="loadData" 
+              class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition whitespace-nowrap text-xs flex items-center gap-1 font-semibold"
+              title="Muat ulang data"
+            >
+              <span>🔄</span> Reload
+            </button>
+          </div>
         </div>
       </div>
 
@@ -141,7 +203,8 @@
           <thead>
             <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
               <th class="py-3 px-4">No Antrean</th>
-              <th class="py-3 px-4">No Registrasi & RM</th>
+              <th class="py-3 px-4">Tgl &amp; Waktu</th>
+              <th class="py-3 px-4">No Registrasi &amp; RM</th>
               <th class="py-3 px-4">Nama Pasien</th>
               <th class="py-3 px-4">Penjamin</th>
               <th class="py-3 px-4">Asal Rujukan</th>
@@ -152,10 +215,12 @@
           </thead>
           <tbody class="divide-y divide-slate-100">
             <tr v-if="loading" class="text-center">
-              <td colspan="8" class="py-8 text-slate-400">Memuat data laboratorium...</td>
+              <td colspan="9" class="py-8 text-slate-400">Memuat data laboratorium...</td>
             </tr>
             <tr v-else-if="allRegistrations.length === 0" class="text-center">
-              <td colspan="8" class="py-8 text-slate-400">Belum ada pasien terdaftar. Silakan lakukan registrasi.</td>
+              <td colspan="9" class="py-8 text-slate-400">
+                Belum ada data pendaftaran ditemukan untuk rentang tanggal ini. Silakan ubah filter tanggal.
+              </td>
             </tr>
             <tr 
               v-for="reg in allRegistrations" 
@@ -166,6 +231,10 @@
                 <span class="bg-teal-50 text-teal-800 px-2 py-1 rounded border border-teal-200 font-mono">
                   {{ reg.queueNumber }}
                 </span>
+              </td>
+              <td class="py-3 px-4 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                <div>{{ formatDateTime(reg.createdAt).date }}</div>
+                <div class="text-[10px] text-slate-400 font-semibold">{{ formatDateTime(reg.createdAt).time }}</div>
               </td>
               <td class="py-3 px-4 font-mono text-[11px]">
                 <div class="font-bold text-slate-900">{{ reg.regNumber }}</div>
@@ -206,7 +275,7 @@
                   {{ formatStatusLabel(reg.status) }}
                 </span>
               </td>
-              <td class="py-3 px-4 text-right">
+              <td class="py-3 px-4 text-right whitespace-nowrap">
                 <button 
                   @click="handleStepAction(reg)"
                   class="text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-sm"
@@ -237,6 +306,62 @@ const allRegistrations = ref([]);
 const filterStatus = ref('ALL');
 const searchQuery = ref('');
 
+// Date Filter State
+const startDate = ref('');
+const endDate = ref('');
+const datePreset = ref('ALL');
+
+const formatDateInput = (d) => {
+  if (!d) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const setDatePreset = (preset) => {
+  datePreset.value = preset;
+  const now = new Date();
+  if (preset === 'TODAY') {
+    const todayStr = formatDateInput(now);
+    startDate.value = todayStr;
+    endDate.value = todayStr;
+  } else if (preset === 'LAST_7_DAYS') {
+    const past = new Date();
+    past.setDate(now.getDate() - 6);
+    startDate.value = formatDateInput(past);
+    endDate.value = formatDateInput(now);
+  } else if (preset === 'THIS_MONTH') {
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    startDate.value = formatDateInput(firstDay);
+    endDate.value = formatDateInput(now);
+  } else {
+    // ALL
+    startDate.value = '';
+    endDate.value = '';
+  }
+  loadData();
+};
+
+const onCustomDateChange = () => {
+  datePreset.value = 'CUSTOM';
+  loadData();
+};
+
+const formatDateTime = (dateStr) => {
+  if (!dateStr) return { date: '-', time: '-' };
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return { date: '-', time: '-' };
+  
+  const dateOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+  const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+  
+  return {
+    date: d.toLocaleDateString('id-ID', dateOptions),
+    time: d.toLocaleTimeString('id-ID', timeOptions) + ' WIB'
+  };
+};
+
 const currentActiveWorkflowStep = computed(() => {
   if (stats.value.workflow?.validasi > 0) return 5;
   if (stats.value.workflow?.analisis > 0) return 4;
@@ -249,8 +374,8 @@ const loadData = async () => {
   loading.value = true;
   try {
     const [statsRes, regRes] = await Promise.all([
-      api.getStats(),
-      api.getRegistrations(filterStatus.value, searchQuery.value)
+      api.getStats(startDate.value, endDate.value),
+      api.getRegistrations(filterStatus.value, searchQuery.value, startDate.value, endDate.value)
     ]);
     stats.value = statsRes.data;
     allRegistrations.value = regRes.data;
@@ -263,7 +388,7 @@ const loadData = async () => {
 
 const loadRegistrations = async () => {
   try {
-    const res = await api.getRegistrations(filterStatus.value, searchQuery.value);
+    const res = await api.getRegistrations(filterStatus.value, searchQuery.value, startDate.value, endDate.value);
     allRegistrations.value = res.data;
   } catch (err) {
     console.error('Failed to filter registrations:', err);
